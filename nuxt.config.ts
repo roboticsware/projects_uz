@@ -4,7 +4,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/i18n'
+    '@nuxtjs/i18n',
+    'nuxt-auth-utils'
   ],
   i18n: {
     locales: ['uz', 'ko', 'en'],

@@ -149,9 +149,10 @@ const themeColor = computed(() => {
               {{ $t('detail.next') }}
               <svg class="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" /></svg>
             </button>
-            <NuxtLink v-else :to="localePath('/projects')" class="w-full sm:w-auto px-12 py-5 rounded-3xl font-black transition-all bg-blue-600 hover:bg-blue-500 text-white shadow-2xl active:scale-95 flex items-center justify-center">
-              {{ $t('detail.finish') }} 🥳
-            </NuxtLink>
+            <!-- Completion & Recommendation UI shown on the last step -->
+            <div v-else class="w-full">
+              <ProjectCompletion :project-slug="path" :project-title="project.title" />
+            </div>
           </div>
         </main>
       </div>

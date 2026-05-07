@@ -2,6 +2,7 @@
 const { locale } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 const localePath = useLocalePath()
+const { user, loggedIn, clear } = useUserSession()
 
 const locales = [
   { code: 'uz', name: 'Oʻzbekcha' },
@@ -14,6 +15,13 @@ const currentLocaleName = computed(() => {
 })
 
 const isLangOpen = ref(false)
+const isUserMenuOpen = ref(false)
+
+async function logout() {
+  await clear()
+  isUserMenuOpen.value = false
+  navigateTo(localePath('/'))
+}
 </script>
 
 <template>
@@ -74,10 +82,46 @@ const isLangOpen = ref(false)
             </div>
           </div>
 
-          <!-- Auth Placeholders -->
-          <div class="hidden sm:flex items-center gap-4 text-xs font-bold">
-            <a href="#" class="hover:text-blue-400 transition-colors">{{ $t('nav.signUp') }}</a>
-            <a href="#" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20">{{ $t('nav.logIn') }}</a>
+          <!-- Auth State -->
+          <div class="hidden sm:flex items-center gap-4 text-xs font-bold relative">
+            <template v-if="loggedIn">
+              <button 
+                @click="isUserMenuOpen = !isUserMenuOpen"
+                class="flex items-center gap-2 hover:text-blue-400 transition-colors focus:outline-none"
+              >
+                <img :src="user.avatar" class="w-7 h-7 rounded-full border-2 border-gray-700 bg-gray-800" alt="Avatar" />
+                <span>{{ user.name }}</span>
+                <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': isUserMenuOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <!-- User Dropdown Menu -->
+              <div v-if="isUserMenuOpen" @click.away="isUserMenuOpen = false" class="absolute right-0 mt-12 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-[60] py-1">
+                <NuxtLink 
+                  :to="localePath('/profile')"
+                  @click="isUserMenuOpen = false"
+                  class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  {{ $t('profile.title') || 'My Profile' }}
+                </NuxtLink>
+                <div class="border-t border-gray-50 my-1"></div>
+                <button 
+                  @click="logout"
+                  class="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                  Log Out
+                </button>
+              </div>
+            </template>
+            <template v-else>
+              <NuxtLink :to="localePath('/auth/signup')" class="hover:text-blue-400 transition-colors">{{ $t('nav.signUp') }}</NuxtLink>
+              <NuxtLink :to="localePath('/auth/login')" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20">
+                {{ $t('nav.logIn') }}
+              </NuxtLink>
+            </template>
           </div>
         </div>
       </div>
