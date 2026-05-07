@@ -16,6 +16,13 @@ const currentLocaleName = computed(() => {
 
 const isLangOpen = ref(false)
 const isUserMenuOpen = ref(false)
+const isMobileMenuOpen = ref(false)
+
+// Close mobile menu on route change
+const route = useRoute()
+watch(route, () => {
+  isMobileMenuOpen.value = false
+})
 
 async function logout() {
   await clear()
@@ -27,7 +34,7 @@ async function logout() {
 <template>
   <div class="min-h-screen bg-gray-50 flex flex-col font-sans">
     <!-- TOP DARK BAR -->
-    <header class="bg-[#1a1a1a] text-white py-2 px-4 sm:px-6 lg:px-8 z-50">
+    <header class="bg-[#1a1a1a] text-white py-2 px-4 sm:px-6 lg:px-8 z-50 relative">
       <div class="max-w-7xl mx-auto flex justify-between items-center h-10">
         <NuxtLink :to="localePath('/')" class="flex items-center gap-2 group cursor-pointer">
           <!-- Robot Logo Icon (Original "Open" Style) -->
@@ -123,8 +130,52 @@ async function logout() {
               </NuxtLink>
             </template>
           </div>
+
+          <!-- Mobile Menu Button (Hamburger) -->
+          <button 
+            class="sm:hidden flex items-center p-2 text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none"
+            @click="isMobileMenuOpen = !isMobileMenuOpen"
+          >
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path v-if="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       </div>
+
+      <!-- Mobile Menu Dropdown Panel -->
+      <transition name="slide-down">
+        <div v-if="isMobileMenuOpen" class="sm:hidden absolute top-full left-0 w-full bg-[#1a1a1a] border-t border-white/10 shadow-2xl z-40">
+          <div class="px-4 py-6 space-y-4">
+            <template v-if="loggedIn">
+              <div class="flex items-center gap-4 px-2 mb-6">
+                <img :src="user.avatar" class="w-12 h-12 rounded-full border-2 border-gray-700 bg-gray-800" alt="Avatar" />
+                <div>
+                  <p class="text-white font-extrabold text-lg">{{ user.name }}</p>
+                  <p class="text-gray-400 text-xs">{{ user.email }}</p>
+                </div>
+              </div>
+              <NuxtLink :to="localePath('/profile')" class="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-xl text-white font-bold hover:bg-white/10 transition-colors">
+                <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                {{ $t('nav.profile') }}
+              </NuxtLink>
+              <button @click="logout" class="w-full flex items-center gap-3 px-4 py-3 bg-red-500/10 rounded-xl text-red-500 font-bold hover:bg-red-500/20 transition-colors">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                {{ $t('nav.logout') }}
+              </button>
+            </template>
+            <template v-else>
+              <NuxtLink :to="localePath('/auth/login')" class="block w-full text-center bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-500 transition-colors shadow-lg">
+                {{ $t('nav.logIn') }}
+              </NuxtLink>
+              <NuxtLink :to="localePath('/auth/signup')" class="block w-full text-center text-white font-bold py-3.5 border border-white/20 rounded-xl hover:bg-white/10 transition-colors mt-3">
+                {{ $t('nav.signUp') }}
+              </NuxtLink>
+            </template>
+          </div>
+        </div>
+      </transition>
     </header>
 
     <!-- SECONDARY WHITE NAV -->
@@ -175,5 +226,15 @@ async function logout() {
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* Mobile menu slide down transition */
+.slide-down-enter-active, .slide-down-leave-active {
+  transition: all 0.3s ease-in-out;
+  transform-origin: top;
+}
+.slide-down-enter-from, .slide-down-leave-to {
+  opacity: 0;
+  transform: scaleY(0);
 }
 </style>
