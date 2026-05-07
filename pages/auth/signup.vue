@@ -1,6 +1,7 @@
 <script setup>
 const { fetch: fetchSession } = useUserSession()
 const localePath = useLocalePath()
+const route = useRoute()
 
 const name = ref('')
 const email = ref('')
@@ -17,7 +18,10 @@ async function signup() {
       body: { name: name.value, email: email.value, password: password.value }
     })
     await fetchSession()
-    navigateTo(localePath('/'))
+    
+    // Redirect back to original page if exists, otherwise go to home
+    const redirectPath = route.query.redirect
+    navigateTo(redirectPath || localePath('/'))
   } catch (e) {
     error.value = e.data?.message || 'Signup failed. Please try again.'
   } finally {
@@ -30,13 +34,13 @@ async function signup() {
   <div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
     <div class="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-black text-gray-900 mb-2">Create Account</h1>
-        <p class="text-gray-500 font-medium">Start your learning journey today</p>
+        <h1 class="text-3xl font-black text-gray-900 mb-2">{{ $t('auth.signupTitle') }}</h1>
+        <p class="text-gray-500 font-medium">{{ $t('auth.signupSubtitle') }}</p>
       </div>
 
       <form @submit.prevent="signup" class="space-y-4">
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-1">Full Name</label>
+          <label class="block text-sm font-bold text-gray-700 mb-1">{{ $t('auth.name') }}</label>
           <input 
             v-model="name" 
             type="text" 
@@ -46,7 +50,7 @@ async function signup() {
           />
         </div>
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-1">Email Address</label>
+          <label class="block text-sm font-bold text-gray-700 mb-1">{{ $t('auth.email') }}</label>
           <input 
             v-model="email" 
             type="email" 
@@ -56,13 +60,13 @@ async function signup() {
           />
         </div>
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-1">Password</label>
+          <label class="block text-sm font-bold text-gray-700 mb-1">{{ $t('auth.password') }}</label>
           <input 
             v-model="password" 
             type="password" 
             required 
             class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-            placeholder="At least 8 characters"
+            :placeholder="$t('auth.passwordPlaceholder')"
           />
         </div>
         
@@ -73,13 +77,13 @@ async function signup() {
           :disabled="isLoading"
           class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/10 disabled:opacity-50"
         >
-          {{ isLoading ? 'Creating account...' : 'Create Account' }}
+          {{ isLoading ? '...' : $t('auth.signupBtn') }}
         </button>
       </form>
 
       <p class="mt-8 text-center text-sm text-gray-500 font-medium">
-        Already have an account? 
-        <NuxtLink :to="localePath('/auth/login')" class="text-blue-600 font-bold hover:underline">Log in</NuxtLink>
+        {{ $t('auth.hasAccount') }}
+        <NuxtLink :to="localePath('/auth/login')" class="text-blue-600 font-bold hover:underline">{{ $t('auth.loginBtn') }}</NuxtLink>
       </p>
     </div>
   </div>

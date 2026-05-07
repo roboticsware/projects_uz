@@ -12,11 +12,16 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['completed'])
+
 const isCompleted = ref(false)
 const isLoading = ref(false)
 const recommendedProject = ref(null)
 
 const route = useRoute()
+const localePath = useLocalePath()
+const { loggedIn, user } = useUserSession()
+
 // Read the global quiz state set by QuizBox.vue
 const quizState = useState(`quiz-${route.path}`, () => ({
   passed: false,
@@ -35,6 +40,9 @@ const completeProject = async () => {
     
     isCompleted.value = true
     recommendedProject.value = data.value?.nextProject
+    
+    // Notify parent to refresh badge list
+    emit('completed')
     
     // Trigger celebration effect
     triggerConfetti()
@@ -80,28 +88,43 @@ const triggerConfetti = () => {
       <!-- Locked Out State -->
       <div v-if="quizState.locked" class="bg-red-50 border border-red-200 rounded-2xl p-8">
         <div class="text-4xl mb-4">🔒</div>
-        <h3 class="text-2xl font-black text-red-700 mb-2">Badge Locked</h3>
-        <p class="text-red-600 font-medium">You failed the quiz 5 times. You cannot earn a badge for this project anymore.</p>
+        <h3 class="text-2xl font-black text-red-700 mb-2">{{ $t('quiz.locked') }}</h3>
       </div>
 
       <!-- Quiz Pending State -->
       <div v-else-if="!quizState.passed" class="bg-gray-50 border border-gray-200 rounded-2xl p-8">
         <div class="text-4xl mb-4">📝</div>
-        <h3 class="text-2xl font-black text-gray-500 mb-2">Quiz Required</h3>
-        <p class="text-gray-500 font-medium">Please pass the quiz above to unlock your badge.</p>
+        <h3 class="text-2xl font-black text-gray-500 mb-2">{{ $t('quiz.required') }}</h3>
+        <p class="text-gray-500 font-medium">{{ $t('quiz.requiredDesc') }}</p>
       </div>
 
       <!-- Ready to Claim State -->
       <div v-else class="animate-fade-in">
-        <h3 class="text-2xl font-black text-gray-900 mb-4">Quiz Passed! 🎉</h3>
-        <button 
-          @click="completeProject"
-          :disabled="isLoading"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:-translate-y-1 transition-transform disabled:opacity-50 w-full"
-        >
-          <span v-if="isLoading">Saving...</span>
-          <span v-else>Claim Your Badge 🏆</span>
-        </button>
+        <h3 class="text-2xl font-black text-gray-900 mb-4">{{ $t('quiz.passed') }} 🎉</h3>
+        
+        <template v-if="loggedIn">
+          <button 
+            @click="completeProject"
+            :disabled="isLoading"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:-translate-y-1 transition-transform disabled:opacity-50 w-full"
+          >
+            <span v-if="isLoading">{{ $t('list.searchPlaceholder').includes('qidirish') ? 'Saqlanmoqda...' : '저장 중...' }}</span>
+            <span v-else>{{ $t('quiz.claimBtn') }} 🏆</span>
+          </button>
+        </template>
+        
+        <template v-else>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-4 text-left">
+            <p class="text-yellow-800 text-sm font-bold mb-1">{{ $t('quiz.almostThere') }}</p>
+            <p class="text-yellow-700 text-xs">{{ $t('quiz.loginToSaveDesc') }}</p>
+          </div>
+          <button 
+            @click="navigateTo(localePath({ path: '/auth/login', query: { redirect: route.fullPath } }))"
+            class="bg-gray-900 hover:bg-black text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:-translate-y-1 transition-transform w-full"
+          >
+            {{ $t('auth.loginBtn') }} & {{ $t('quiz.claimBtn') }} 🏆
+          </button>
+        </template>
       </div>
     </div>
 
@@ -111,15 +134,15 @@ const triggerConfetti = () => {
       <div class="text-6xl mb-6 animate-bounce">🎉</div>
       
       <h3 class="text-3xl font-black text-gray-900 mb-2">
-        Congratulations! You've completed {{ projectTitle }}
+        {{ $t('completion.congrats') }} {{ projectTitle }}
       </h3>
       <p class="text-gray-600 mb-8 font-medium">
-        Well done! A new badge has been added to your profile.
+        {{ $t('completion.wellDone') }}
       </p>
 
       <!-- Next Project Recommendation -->
       <div v-if="recommendedProject" class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 max-w-2xl mx-auto text-left">
-        <h4 class="font-black text-gray-900 mb-4 text-center">What's next?</h4>
+        <h4 class="font-black text-gray-900 mb-4 text-center">{{ $t('completion.whatsNext') }}</h4>
         <div class="flex items-center justify-between gap-6">
           <div>
             <h5 class="font-bold text-lg text-gray-900">{{ recommendedProject.title }}</h5>
@@ -129,7 +152,7 @@ const triggerConfetti = () => {
             :to="recommendedProject._path"
             class="whitespace-nowrap bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors"
           >
-            Start project
+            {{ $t('completion.startProject') }}
           </NuxtLink>
         </div>
       </div>

@@ -2,6 +2,12 @@
 const { locale, t } = useI18n()
 const { path } = useRoute()
 const localePath = useLocalePath()
+const { loggedIn, user } = useUserSession()
+
+const { data: badges, refresh: refreshBadges } = await useFetch('/api/user/badges', {
+  lazy: true,
+  server: false
+})
 
 // 1. Fetch project data
 const { data: project } = await useAsyncData(`project-${path}`, () => queryContent(path).findOne())
@@ -109,14 +115,48 @@ const themeColor = computed(() => {
                 <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
                 {{ $t('detail.print') }}
               </button>
-              <div class="bg-white rounded-3xl shadow-md border border-gray-100 p-6 text-center">
+              <div v-if="!loggedIn" class="bg-white rounded-3xl shadow-md border border-gray-100 p-6 text-center">
                 <h4 class="font-black text-gray-900 mb-2">{{ $t('detail.badges') }}</h4>
                 <p class="text-xs text-gray-500 mb-4 leading-relaxed">{{ $t('detail.badgesDesc') }}</p>
                 <div class="flex justify-center gap-2 mb-6">
                   <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">🎯</div>
                   <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">⭐</div>
                 </div>
-                <button class="w-full bg-gray-900 text-white py-3 rounded-2xl font-bold text-sm hover:bg-black shadow-lg">{{ $t('detail.loginToSave') }}</button>
+                <button 
+                  @click="navigateTo(localePath('/auth/login'))"
+                  class="w-full bg-gray-900 text-white py-3 rounded-2xl font-bold text-sm hover:bg-black shadow-lg transition-all active:scale-95"
+                >
+                  {{ $t('detail.loginToSave') }}
+                </button>
+              </div>
+              <div v-else class="bg-blue-50 rounded-3xl border border-blue-100 p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mx-auto mb-3 text-xl overflow-hidden">
+                  <img v-if="user?.avatar" :src="user.avatar" class="w-full h-full object-cover" />
+                  <span v-else>👋</span>
+                </div>
+                <h4 class="font-black text-blue-900 mb-4 text-sm">{{ user.name }}</h4>
+                
+                <!-- Badges Display -->
+                <div class="border-t border-blue-200/50 pt-4 mt-2">
+                  <p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest mb-3">{{ $t('profile.badges') }}</p>
+                  
+                  <div v-if="badges?.length > 0" class="flex flex-wrap justify-center gap-2">
+                    <NuxtLink v-for="badge in badges.slice(0, 5)" :key="badge.id" :to="localePath('/profile')" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-sm shadow-sm border border-blue-100 hover:scale-110 transition-transform" :title="badge.projectTitle">
+                      🏆
+                    </NuxtLink>
+                    <NuxtLink v-if="badges.length > 5" :to="localePath('/profile')" class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700 shadow-sm border border-blue-200 hover:scale-110 transition-transform">
+                      +{{ badges.length - 5 }}
+                    </NuxtLink>
+                  </div>
+                  
+                  <div v-else class="text-xs text-blue-500 font-medium">
+                    {{ $t('profile.noBadges').split('.')[0] }}
+                  </div>
+                  
+                  <NuxtLink :to="localePath('/profile')" class="inline-block mt-4 text-xs font-bold text-blue-700 hover:underline">
+                    {{ $t('nav.profile') }} &rarr;
+                  </NuxtLink>
+                </div>
               </div>
             </div>
           </div>
@@ -151,7 +191,7 @@ const themeColor = computed(() => {
             </button>
             <!-- Completion & Recommendation UI shown on the last step -->
             <div v-else class="w-full">
-              <ProjectCompletion :project-slug="path" :project-title="project.title" />
+              <ProjectCompletion :project-slug="path" :project-title="project.title" @completed="refreshBadges" />
             </div>
           </div>
         </main>

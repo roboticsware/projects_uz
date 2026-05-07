@@ -104,7 +104,7 @@ async function logout() {
                   class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                  {{ $t('profile.title') || 'My Profile' }}
+                  {{ $t('nav.profile') }}
                 </NuxtLink>
                 <div class="border-t border-gray-50 my-1"></div>
                 <button 
@@ -112,7 +112,7 @@ async function logout() {
                   class="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                  Log Out
+                  {{ $t('nav.logout') }}
                 </button>
               </div>
             </template>
@@ -161,7 +161,7 @@ async function logout() {
     <!-- FOOTER (Optional) -->
     <footer class="bg-gray-100 border-t border-gray-200 py-12 mt-auto">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p class="text-sm text-gray-500">© 2024 Roboticsware. Empowering the next generation of engineers.</p>
+        <p class="text-sm text-gray-500">© 2024 Roboticsware. {{ $t('nav.footerSlogan') }}</p>
       </div>
     </footer>
   </div>

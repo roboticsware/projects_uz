@@ -1,15 +1,15 @@
 <template>
   <div class="bg-blue-50 border-l-4 border-blue-500 p-6 my-8 rounded-r-lg shadow-sm">
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl font-black text-blue-900">Knowledge Check</h3>
+      <h3 class="text-xl font-black text-blue-900">{{ $t('quiz.title') }}</h3>
       <span class="text-sm font-bold px-3 py-1 rounded-full" :class="quizState.attempts > 2 ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-800'">
-        Attempt {{ Math.min(quizState.attempts + 1, 5) }} of 5
+        {{ $t('quiz.attempt', { n: Math.min(quizState.attempts + 1, 5) }) }}
       </span>
     </div>
 
     <!-- Warning Message -->
     <div v-if="!quizState.passed && !quizState.locked" class="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs font-bold p-3 rounded-lg mb-4 flex items-center gap-2">
-      <span>⚠️</span> You must pass this quiz to earn the project badge. You have a maximum of 5 attempts!
+      <span>⚠️</span> {{ $t('quiz.warning') }}
     </div>
 
     <p class="font-bold text-gray-800 mb-6 text-lg">{{ question }}</p>
@@ -37,13 +37,13 @@
 
     <!-- Result Messages -->
     <div v-if="quizState.passed" class="mt-6 bg-green-100 text-green-800 p-4 rounded-xl font-bold flex items-center gap-2 animate-fade-in">
-      <span>🎉</span> Correct! You have unlocked the project badge. Scroll down to claim it!
+      <span>🎉</span> {{ $t('quiz.correct') }}
     </div>
     <div v-else-if="quizState.locked" class="mt-6 bg-red-100 text-red-800 p-4 rounded-xl font-bold flex items-center gap-2 animate-fade-in">
-      <span>🔒</span> Locked. You failed 5 times and cannot earn the badge for this project.
+      <span>🔒</span> {{ $t('quiz.locked') }}
     </div>
     <div v-else-if="selected && selected !== answer" class="mt-4 text-red-600 font-bold text-sm">
-      Incorrect. Try again! ({{ 5 - quizState.attempts }} attempts left)
+      {{ $t('quiz.incorrect', { n: 5 - quizState.attempts }) }}
     </div>
   </div>
 </template>
