@@ -1,86 +1,89 @@
 ---
-title: "LED Firefly"
-description: "Make a Raspberry Pi Pico blink like a firefly and learn about circuits!"
-difficulty: "Level 1"
-technology: ["Python"]
-hardware: ["Raspberry Pi", "Electronic components"]
+title: "반짝이는 LED 반딧불이"
+description: "라즈베리 파이 피코를 사용하여 반딧불이처럼 깜빡이는 LED를 만들고 전기 회로의 기초를 배워보세요!"
+difficulty: "초급"
+technology: ["로봇공학"]
+hardware: ["Raspberry Pi Pico"]
 ---
 
-# What you will make
+# 무엇을 만들게 되나요?
 
-In this project, you will use a Raspberry Pi Pico to make an LED firefly that flashes in a particular pattern, just like fireflies in nature.
+이 프로젝트에서는 라즈베리 파이 피코(Raspberry Pi Pico)를 사용하여 자연 속의 반딧불이처럼 특정 패턴으로 깜빡이는 LED 반딧불이를 만들어 봅니다.
 
 ::ProjectAlert{type="warning"}
-# Flashing light warning
-This project uses **blinking lights**. A very small percentage of people may experience a seizure when exposed to certain visual images. If you feel unwell, immediately stop working.
+# 광과민성 경고
+이 프로젝트는 **깜빡이는 빛**을 사용합니다. 아주 적은 비율의 사람들이 특정 시각적 이미지에 노출될 때 발작을 일으킬 수 있습니다. 작업 중 몸이 불편하다면 즉시 중단하세요.
 ::
 
 ---
 
-## Set up your hardware
+## 하드웨어 준비하기
 
-To complete this project, you will need to gather your components.
+이 프로젝트를 완료하려면 다음 부품들을 준비해야 합니다.
 
 ::ProjectTask
-Gather 1x Yellow LED, 1x 100Ω resistor, and 2x jumper wires.
+노란색 LED 1개, 100Ω 저항 1개, 점퍼 와이어 2개를 준비하세요.
 ::
 
 ::ProjectTask
-Plug your Raspberry Pi Pico into your computer using a USB cable.
+USB 케이블을 사용하여 라즈베리 파이 피코를 컴퓨터에 연결하세요.
 ::
 
 ::ProjectAlert{type="info"}
-# Hardware Tip
-A **microcontroller** is a tiny computing device that can run code and interact with electronics. The Raspberry Pi Pico is perfect for beginners!
+# 하드웨어 팁
+**마이크로컨트롤러**는 코드를 실행하고 전자 부품과 상호작용할 수 있는 아주 작은 컴퓨터 장치입니다. 라즈베리 파이 피코는 입문자에게 안성맞춤입니다!
 ::
 
 ---
 
-## Light the firefly
+## 반딧불이 조립하기
 
-Now it's time to connect the LED to your Pico.
+이제 LED를 피코에 연결할 차례입니다.
 
-1. Connect the **long leg** of the LED to GPIO pin 15.
-2. Connect the **short leg** to a resistor, then to a GND pin.
+1. LED의 **긴 다리**를 GPIO 15번 핀에 연결합니다.
+2. LED의 **짧은 다리**를 저항에 연결한 후, GND(접지) 핀에 연결합니다.
 
 ::ProjectTask
-Verify that your circuit matches the diagram below (imagine a diagram here!).
+회로가 아래 다이어그램(그림이 있다고 가정해 보세요!)과 일치하는지 확인하세요.
 ::
 
 ---
 
-## Make your firefly blink
+## 반딧불이 깜빡이게 만들기
 
-Open Thonny and write the following Python code:
+Thonny 에디터를 열고 다음 파이썬 코드를 작성하세요.
 
 ```python
 from machine import Pin
 import time
 
+# LED가 연결된 핀 설정 (GPIO 15)
 led = Pin(15, Pin.OUT)
 
 while True:
-    led.toggle()
+    led.value(1)  # LED 켜기
+    time.sleep(0.5)
+    led.value(0)  # LED 끄기
     time.sleep(0.5)
 ```
 
 ::ProjectAlert{type="success"}
-# Challenge!
-Can you change the `time.sleep` value to make the firefly blink faster or slower?
+# 도전 과제!
+`time.sleep` 값을 변경하여 반딧불이가 더 빠르게 또는 더 느리게 깜빡이도록 만들 수 있나요?
 ::
 
 ---
 
-## Quick quiz
+## 퀵 퀴즈
 
-Before you finish, let's test your knowledge!
+마치기 전에, 배운 내용을 확인해 봅시다!
 
 ::QuizBox
 ---
 question: "Which component limits the electrical current to protect the LED?"
-options: ["Resistor", "Battery", "Switch"]
-answer: "Resistor"
+options: ["저항(Resistor)", "배터리(Battery)", "스위치(Switch)"]
+answer: "저항(Resistor)"
 ---
 ::
 
-Awesome job! You've created your first interactive hardware project.
+잘하셨습니다! 여러분의 첫 번째 인터랙티브 하드웨어 프로젝트를 성공적으로 마쳤습니다.

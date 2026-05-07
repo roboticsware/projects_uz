@@ -28,7 +28,9 @@ export default {
         difficulty: 'Qiyinchilik darajasi',
         technology: 'Texnologiya',
         hardware: 'Uskuna',
-        levels: ['1-daraja', '2-daraja', '3-daraja']
+        levels: ['1-daraja', '2-daraja', '3-daraja'],
+        techOptions: ['Entry', 'Python', 'Robototexnika', 'AI & Data', '3D & CAD'],
+        hardwareOptions: ['Elektronika', 'Arduino Uno', 'Raspberry Pi Pico', 'ESP32-S3']
       },
       detail: {
         back: 'Loyihalarga qaytish',
@@ -120,7 +122,9 @@ export default {
         difficulty: '난이도',
         technology: '기술 스택',
         hardware: '하드웨어',
-        levels: ['레벨 1', '레벨 2', '레벨 3']
+        levels: ['초급', '중급', '고급'],
+        techOptions: ['엔트리', '파이썬', '로봇공학', 'AI & 데이터', '3D & CAD'],
+        hardwareOptions: ['전자 부품', '아두이노 우노', '라즈베리 파이 피코', 'ESP32-S3']
       },
       detail: {
         back: '프로젝트 목록으로',
@@ -212,7 +216,9 @@ export default {
         difficulty: 'Difficulty',
         technology: 'Technology',
         hardware: 'Hardware',
-        levels: ['Level 1', 'Level 2', 'Level 3']
+        levels: ['Level 1', 'Level 2', 'Level 3'],
+        techOptions: ['Entry', 'Python', 'Physical Computing', 'AI & Data', '3D & CAD'],
+        hardwareOptions: ['Electronic components', 'Arduino Uno', 'Raspberry Pi Pico', 'ESP32-S3']
       },
       detail: {
         back: 'Back to projects',

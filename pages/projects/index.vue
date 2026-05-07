@@ -20,12 +20,12 @@ const filterConfig = computed(() => [
   {
     id: 'technology',
     label: t('list.technology'),
-    options: ['Entry', 'Python', 'Physical Computing', 'AI & Data', '3D & CAD']
+    options: tm('list.techOptions')
   },
   {
     id: 'hardware',
     label: t('list.hardware'),
-    options: ['Electronic components', 'Arduino Uno', 'Raspberry Pi Pico', 'ESP32-S3']
+    options: tm('list.hardwareOptions')
   }
 ])
 

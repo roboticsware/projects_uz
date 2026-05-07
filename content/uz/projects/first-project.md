@@ -2,8 +2,8 @@
 title: "LED Svetlyachok"
 description: "Raspberry Pi Pico-ni svetlyachok kabi miltillashga majbur qiling va sxemalar haqida bilib oling!"
 difficulty: "1-daraja"
-technology: ["Python"]
-hardware: ["Raspberry Pi", "Elektron komponentlar"]
+technology: ["Robototexnika"]
+hardware: ["Raspberry Pi Pico"]
 ---
 
 # Siz nima qilasiz

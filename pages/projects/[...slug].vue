@@ -57,6 +57,11 @@ const themeColor = computed(() => {
   if (tech.includes('python')) return 'bg-blue-500'
   return 'bg-cyan-500'
 })
+
+const isHardwareProject = computed(() => {
+  const tech = project.value?.technology?.[0]?.toLowerCase() || ''
+  return tech.includes('robot') || tech.includes('physical') || tech.includes('로봇')
+})
 </script>
 
 <template>
@@ -74,6 +79,13 @@ const themeColor = computed(() => {
             <div class="flex flex-wrap gap-2 mb-4">
               <span class="bg-black/20 text-white text-[10px] font-bold px-2 py-1 rounded border border-white/20 uppercase tracking-widest">{{ project.difficulty }}</span>
               <span class="bg-black/20 text-white text-[10px] font-bold px-2 py-1 rounded border border-white/20 uppercase tracking-widest">{{ project.technology?.[0] }}</span>
+              <!-- Hardware Sub-category Badge -->
+              <template v-if="isHardwareProject && project.hardware?.length">
+                <span v-for="hw in project.hardware" :key="hw" class="bg-orange-500/80 text-white text-[10px] font-black px-2 py-1 rounded border border-orange-300/50 uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
+                  {{ hw }}
+                </span>
+              </template>
             </div>
             <h1 class="text-4xl sm:text-5xl font-black mb-4 tracking-tight">{{ project.title }}</h1>
             <div class="mt-6 p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 inline-flex flex-col">

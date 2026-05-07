@@ -7,6 +7,7 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+const isOpen = ref(true) // Open by default
 
 const config = computed(() => ({
   info: {
@@ -33,9 +34,9 @@ const style = computed(() => config.value[props.type] || config.value.info)
 </script>
 
 <template>
-  <div :class="['my-6 p-5 rounded-xl border-l-4 shadow-sm', style.bg, style.border]">
-    <div class="flex items-start">
-      <div :class="['flex-shrink-0 mr-4', style.iconColor]">
+  <div :class="['my-6 rounded-xl border-l-4 shadow-sm transition-all duration-300', style.bg, style.border, isOpen ? 'p-5' : 'p-3 px-5']">
+    <div class="flex items-start cursor-pointer group" @click="isOpen = !isOpen">
+      <div :class="['flex-shrink-0 mr-4 mt-0.5', style.iconColor]">
         <!-- Info Icon -->
         <svg v-if="type === 'info'" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -49,14 +50,43 @@ const style = computed(() => config.value[props.type] || config.value.info)
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
-      <div>
-        <h4 :class="['font-extrabold text-sm uppercase tracking-wider mb-1', style.iconColor]">
-          <ContentSlot :use="$slots.title" unwrap="p">{{ style.title }}</ContentSlot>
-        </h4>
-        <div class="text-gray-700 leading-relaxed">
-          <ContentSlot :use="$slots.default" />
+      
+      <div class="flex-grow">
+        <div class="flex items-center justify-between">
+          <h4 :class="['font-extrabold text-sm uppercase tracking-wider', style.iconColor]">
+            <ContentSlot :use="$slots.title" unwrap="p">{{ style.title }}</ContentSlot>
+          </h4>
+          <svg 
+            class="w-4 h-4 transition-transform duration-300 text-gray-400 group-hover:text-gray-600"
+            :class="{ 'rotate-180': isOpen }"
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
+        
+        <transition name="expand">
+          <div v-show="isOpen" class="mt-2 text-gray-700 leading-relaxed overflow-hidden">
+            <ContentSlot :use="$slots.default" />
+          </div>
+        </transition>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.3s ease-in-out;
+  max-height: 500px;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+</style>
