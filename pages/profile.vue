@@ -1,7 +1,8 @@
 <script setup>
 const { t } = useI18n()
+const localePath = useLocalePath()
 definePageMeta({
-  middleware: 'auth' // This requires nuxt-auth-utils to be set up
+  middleware: 'auth'
 })
 
 const { user, clear } = useUserSession()
@@ -40,6 +41,31 @@ const logout = async () => {
       <div class="flex-grow">
         <h1 class="text-3xl font-black text-gray-900">{{ user?.name }}</h1>
         <p class="text-gray-500 font-medium">{{ user?.email }}</p>
+        <!-- Role Badge -->
+        <div class="mt-2 flex items-center gap-2 flex-wrap">
+          <span v-if="user?.role === 'student'"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-700">
+            🎒 학생
+          </span>
+          <span v-else-if="user?.role === 'teacher'"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-green-100 text-green-700">
+            👨‍🏫 교사 / 강사
+          </span>
+          <span v-else-if="user?.role === 'sub_admin'"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-purple-100 text-purple-700">
+            🔧 부관리자
+          </span>
+          <span v-else-if="user?.role === 'admin'"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-red-100 text-red-700">
+            👑 관리자
+          </span>
+          <!-- 교사 이상: 작성 페이지 바로가기 -->
+          <NuxtLink v-if="['teacher','sub_admin','admin'].includes(user?.role)"
+            :to="localePath('/write')"
+            class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-gray-100 text-gray-600 hover:bg-green-100 hover:text-green-700 transition-colors">
+            ✍️ 내 콘텐츠 작성하기 →
+          </NuxtLink>
+        </div>
       </div>
       <button @click="logout" class="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-colors">
         {{ $t('nav.logout') }}

@@ -11,11 +11,15 @@ function hashPassword(password: string) {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { email, password, name } = body
+  const { email, password, name, role } = body
 
   if (!email || !password || !name) {
     throw createError({ statusCode: 400, message: 'All fields are required' })
   }
+
+  // role 값 검증 (가입 시에는 student 또는 teacher만 허용)
+  const allowedRoles = ['student', 'teacher']
+  const userRole = allowedRoles.includes(role) ? role : 'student'
 
   const db = useDb()
 
@@ -30,7 +34,8 @@ export default defineEventHandler(async (event) => {
     email,
     password: hashPassword(password),
     name,
-    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}` // Default avatar
+    role: userRole,
+    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`
   }).returning().get()
 
   // Automatically log in after registration
@@ -39,7 +44,8 @@ export default defineEventHandler(async (event) => {
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
-      avatar: newUser.avatar
+      avatar: newUser.avatar,
+      role: newUser.role,
     }
   })
 

@@ -92,6 +92,12 @@ async function logout() {
           <!-- Auth State -->
           <div class="hidden sm:flex items-center gap-4 text-xs font-bold relative">
             <template v-if="loggedIn">
+              <!-- 작성 링크 (교사 이상만 표시) -->
+              <NuxtLink v-if="['teacher','sub_admin','admin'].includes(user?.role)" :to="localePath('/write')"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white transition-colors font-black">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                작성하기
+              </NuxtLink>
               <button 
                 @click="isUserMenuOpen = !isUserMenuOpen"
                 class="flex items-center gap-2 hover:text-blue-400 transition-colors focus:outline-none"
@@ -104,7 +110,7 @@ async function logout() {
               </button>
 
               <!-- User Dropdown Menu -->
-              <div v-if="isUserMenuOpen" @click.away="isUserMenuOpen = false" class="absolute right-0 mt-12 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-[60] py-1">
+              <div v-if="isUserMenuOpen" @click.away="isUserMenuOpen = false" class="absolute right-0 mt-12 w-52 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-[60] py-1">
                 <NuxtLink 
                   :to="localePath('/profile')"
                   @click="isUserMenuOpen = false"
@@ -112,6 +118,16 @@ async function logout() {
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   {{ $t('nav.profile') }}
+                </NuxtLink>
+                <!-- 관리자 메뉴 (sub_admin, admin만) -->
+                <NuxtLink
+                  v-if="['sub_admin','admin'].includes(user?.role)"
+                  :to="localePath('/admin')"
+                  @click="isUserMenuOpen = false"
+                  class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-purple-700 hover:bg-purple-50 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  🛡️ 관리자 대시보드
                 </NuxtLink>
                 <div class="border-t border-gray-50 my-1"></div>
                 <button 
