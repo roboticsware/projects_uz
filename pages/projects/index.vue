@@ -148,6 +148,14 @@ const filteredProjects = computed(() => {
               </div>
               <h2 class="text-xl font-extrabold text-gray-900 mb-2 leading-tight group-hover:text-green-600 transition-colors">{{ project.title }}</h2>
               <p class="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed flex-grow">{{ project.description }}</p>
+              
+              <!-- Author Info in Card Footer -->
+              <div class="mt-4 pt-4 border-t border-gray-50 flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] border border-gray-200">
+                  <svg class="w-3 h-3 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider group-hover:text-gray-600 transition-colors">{{ project.author || 'Roboticsware' }}</span>
+              </div>
             </div>
           </div>
         </div>

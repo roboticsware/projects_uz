@@ -4,6 +4,7 @@ description: "Raspberry Pi Pico-ni svetlyachok kabi miltillashga majbur qiling v
 difficulty: "1-daraja"
 technology: ["Robototexnika"]
 hardware: ["Raspberry Pi Pico"]
+author: "Roboticsware"
 ---
 
 # Siz nima qilasiz

@@ -88,10 +88,17 @@ const isHardwareProject = computed(() => {
               </template>
             </div>
             <h1 class="text-4xl sm:text-5xl font-black mb-4 tracking-tight">{{ project.title }}</h1>
-            <div class="mt-6 p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 inline-flex flex-col">
-              <p class="text-white/80 text-[10px] font-bold uppercase mb-2">{{ $t('detail.yourProgress') }}</p>
-              <div class="flex gap-2">
-                <div v-for="(s, i) in steps" :key="i" class="w-4 h-4 rounded-full border-2 transition-all" :class="i <= currentStepIndex ? 'bg-white border-white scale-110 shadow-lg' : 'bg-transparent border-white/40'"></div>
+            
+            <div class="flex flex-wrap items-center gap-4 mt-4">
+              <!-- Author Info -->
+              <div v-if="project.author" class="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/20 shadow-sm group hover:bg-white/20 transition-all cursor-default">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-white/30 to-white/10 flex items-center justify-center border border-white/30 shadow-inner overflow-hidden">
+                  <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <div class="flex flex-col leading-tight">
+                  <span class="text-[10px] font-black uppercase text-white/50 tracking-widest">{{ $t('detail.author') }}</span>
+                  <span class="text-base font-black text-white">{{ project.author }}</span>
+                </div>
               </div>
             </div>
           </div>
